@@ -1,6 +1,7 @@
 //! Spawn the main level.
 
 use bevy::prelude::*;
+use bevy_vox_scene::VoxScenePlugin;
 
 use crate::{
     asset_tracking::LoadResource,
@@ -10,6 +11,7 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(VoxScenePlugin::default());
     app.register_type::<LevelAssets>();
     app.load_resource::<LevelAssets>();
 }
@@ -19,6 +21,10 @@ pub(super) fn plugin(app: &mut App) {
 pub struct LevelAssets {
     #[dependency]
     music: Handle<AudioSource>,
+    #[dependency]
+    desk: Handle<Scene>,
+    #[dependency]
+    arthur: Handle<Scene>,
 }
 
 impl FromWorld for LevelAssets {
@@ -26,6 +32,8 @@ impl FromWorld for LevelAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             music: assets.load("audio/music/Fluffing A Duck.ogg"),
+            desk: assets.load("models/study.vox#workstation/desk"),
+            arthur: assets.load("models/arthur.vox"),
         }
     }
 }
@@ -49,5 +57,22 @@ pub fn spawn_level(
                 music(level_assets.music.clone())
             )
         ],
+    ));
+
+    commands.spawn(
+        // Load a single model using the name assigned to it in MagicaVoxel
+        // If a model is nested in a named group, than the group will form part of the path
+        // Path components are separated with a slash
+        SceneRoot(level_assets.desk.clone()),
+    );
+
+    commands.spawn((
+        SceneRoot(level_assets.arthur.clone()),
+        Transform::from_xyz(0.0, 16.0, 0.0),
+    ));
+
+    commands.spawn((
+        DirectionalLight::default(),
+        Transform::IDENTITY.looking_to(Vec3::new(2.5, -1., 0.85), Vec3::Y),
     ));
 }

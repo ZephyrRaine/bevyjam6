@@ -11,7 +11,7 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, pbr::Atmosphere, prelude::*};
 
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
@@ -82,5 +82,14 @@ enum AppSystems {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn((Name::new("Camera"), Camera2d));
+    commands.spawn((
+        Name::new("Camera"),
+        Camera3d::default(),
+        Camera {
+            hdr: true,
+            ..default()
+        },
+        Transform::from_xyz(30.0, 30.0, 120.0).looking_at(Vec3::Y*8.0, Vec3::Y),
+        Atmosphere::EARTH,
+    ));
 }
