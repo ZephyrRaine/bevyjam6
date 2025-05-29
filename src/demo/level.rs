@@ -22,7 +22,7 @@ pub struct LevelAssets {
     #[dependency]
     music: Handle<AudioSource>,
     //#[dependency]
-   // desk: Handle<Scene>,
+    // desk: Handle<Scene>,
     #[dependency]
     arthur: Handle<Scene>,
 }
@@ -32,7 +32,7 @@ impl FromWorld for LevelAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             music: assets.load("audio/music/Fluffing A Duck.ogg"),
-        //    desk: assets.load("models/study.vox#workstation/desk"),
+            //    desk: assets.load("models/study.vox#workstation/desk"),
             arthur: assets.load("models/arthur.vox"),
         }
     }

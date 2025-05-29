@@ -89,7 +89,7 @@ fn spawn_camera(mut commands: Commands) {
             hdr: true,
             ..default()
         },
-        Transform::from_xyz(30.0, 30.0, 120.0).looking_at(Vec3::Y*8.0, Vec3::Y),
+        Transform::from_xyz(30.0, 30.0, 120.0).looking_at(Vec3::Y * 8.0, Vec3::Y),
         Atmosphere::EARTH,
     ));
 }
