@@ -21,8 +21,8 @@ pub(super) fn plugin(app: &mut App) {
 pub struct LevelAssets {
     #[dependency]
     music: Handle<AudioSource>,
-    #[dependency]
-    desk: Handle<Scene>,
+    //#[dependency]
+   // desk: Handle<Scene>,
     #[dependency]
     arthur: Handle<Scene>,
 }
@@ -32,7 +32,7 @@ impl FromWorld for LevelAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             music: assets.load("audio/music/Fluffing A Duck.ogg"),
-            desk: assets.load("models/study.vox#workstation/desk"),
+        //    desk: assets.load("models/study.vox#workstation/desk"),
             arthur: assets.load("models/arthur.vox"),
         }
     }
@@ -59,12 +59,12 @@ pub fn spawn_level(
         ],
     ));
 
-    commands.spawn(
+    /*commands.spawn(
         // Load a single model using the name assigned to it in MagicaVoxel
         // If a model is nested in a named group, than the group will form part of the path
         // Path components are separated with a slash
         SceneRoot(level_assets.desk.clone()),
-    );
+    );*/
 
     commands.spawn((
         SceneRoot(level_assets.arthur.clone()),
