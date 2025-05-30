@@ -12,7 +12,7 @@ mod screens;
 mod theme;
 
 use bevy::{asset::AssetMetaCheck, pbr::Atmosphere, prelude::*};
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
