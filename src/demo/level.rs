@@ -52,7 +52,7 @@ pub fn spawn_level(
         Transform::from_xyz(0.0, 0.0, 0.0),
     ));*/
 
-    let ball_mesh = mesh_assets.add(Sphere::new(1.));
+    let ball_mesh = mesh_assets.add(Cuboid::new(10.0, 10.0, 10.0));
     let ball_material = material_assets.add(StandardMaterial {
         base_color: Color::linear_rgb(1.0, 0.0, 1.0),
         ..Default::default()
@@ -69,11 +69,18 @@ pub fn spawn_level(
         let _click_event: &Pointer<Click> = trigger.event();
         // Stop the event from bubbling up the entity hierarchy
         trigger.propagate(false);
-    });
+    }).observe(rotate_on_drag);
 
 
     commands.spawn((
         DirectionalLight::default(),
         Transform::IDENTITY.looking_to(Vec3::new(2.5, -1., 0.85), Vec3::Y),
     ));
+}
+
+/// An observer to rotate an entity when it is dragged
+fn rotate_on_drag(drag: Trigger<Pointer<Drag>>, mut transforms: Query<&mut Transform>) {
+    let mut transform = transforms.get_mut(drag.target()).unwrap();
+    transform.rotate_y(drag.delta.x * 0.02);
+    transform.rotate_x(drag.delta.y * 0.02);
 }
