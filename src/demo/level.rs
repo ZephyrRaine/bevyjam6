@@ -5,8 +5,6 @@ use bevy_vox_scene::VoxScenePlugin;
 
 use crate::{
     asset_tracking::LoadResource,
-    audio::music,
-    demo::player::{PlayerAssets, player},
     screens::Screen,
 };
 
@@ -38,28 +36,41 @@ impl FromWorld for LevelAssets {
 /// A system that spawns the main level.
 pub fn spawn_level(
     mut commands: Commands,
+    mut mesh_assets: ResMut<Assets<Mesh>>,
+    mut material_assets: ResMut<Assets<StandardMaterial>>,
     level_assets: Res<LevelAssets>,
-    player_assets: Res<PlayerAssets>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     commands.spawn((
         Name::new("Level"),
         Transform::default(),
         Visibility::default(),
-        StateScoped(Screen::Gameplay),
-        children![
-            player(400.0, &player_assets, &mut texture_atlas_layouts),
-            (
-                Name::new("Gameplay Music"),
-                music(level_assets.music.clone())
-            )
-        ],
+        StateScoped(Screen::Gameplay)
     ));
 
-    commands.spawn((
+/*    commands.spawn((
         SceneRoot(level_assets.module.clone()),
         Transform::from_xyz(0.0, 0.0, 0.0),
-    ));
+    ));*/
+
+    let ball_mesh = mesh_assets.add(Sphere::new(1.));
+    let ball_material = material_assets.add(StandardMaterial {
+        base_color: Color::linear_rgb(1.0, 0.0, 1.0),
+        ..Default::default()
+    });
+    println!("I was just spawned!");
+
+    commands.spawn((
+        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+        Mesh3d(ball_mesh.clone()),
+        MeshMaterial3d(ball_material),
+    )).observe(|mut trigger: Trigger<Pointer<Click>>| {
+        println!("I was just clicked!");
+        // Get the underlying pointer event data
+        let _click_event: &Pointer<Click> = trigger.event();
+        // Stop the event from bubbling up the entity hierarchy
+        trigger.propagate(false);
+    });
+
 
     commands.spawn((
         DirectionalLight::default(),
