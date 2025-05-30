@@ -12,6 +12,7 @@ mod screens;
 mod theme;
 
 use bevy::{asset::AssetMetaCheck, pbr::Atmosphere, prelude::*};
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
@@ -56,6 +57,8 @@ impl Plugin for AppPlugin {
                 }),
         );
 
+        app.add_plugins(EguiPlugin { enable_multipass_for_primary_context: true });
+        app.add_plugins(WorldInspectorPlugin::new());
         // Add other plugins.
         app.add_plugins((
             asset_tracking::plugin,
