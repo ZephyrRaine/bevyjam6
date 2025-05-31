@@ -90,9 +90,23 @@ fn on_voxel_instance_ready(
                 entity_commands.insert(Synchronized::new(0));
             }
             "bipper" => {
+                let mut track_hover = 1;
+                let mut track_click = 2;
+
+                if let Some(track_str) = params.get(0) {
+                    if let Ok(track) = track_str.parse::<usize>() {
+                        track_hover = track;
+                    }
+                }
+                if let Some(track_str) = params.get(1) {
+                    if let Ok(track) = track_str.parse::<usize>() {
+                        track_click = track;
+                    }
+                }
+
                 entity_commands.insert((Bipper {
-                    audio_hover_id: "bipper2.ogg".to_string(),
-                    audio_click_id: "bipper1.ogg".to_string(),
+                    audio_hover_id: format!("bipper{}.ogg", track_hover),
+                    audio_click_id: format!("bipper{}.ogg", track_click),
                 },));
             }
             _ => {}
