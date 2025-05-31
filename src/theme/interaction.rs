@@ -1,7 +1,4 @@
-use std::process::Command;
-
-use bevy::{ecs::system::command, prelude::*, state::commands, transform};
-use tracing::Instrument;
+use bevy::prelude::*;
 
 use crate::{asset_tracking::LoadResource, audio::sound_effect};
 
@@ -13,9 +10,7 @@ pub(super) fn plugin(app: &mut App) {
     app.load_resource::<InteractionAssets>();
     app.add_observer(play_on_hover_sound_effect);
     app.add_observer(play_on_click_sound_effect);
-
 }
-
 
 /// Palette for widget interactions. Add this to an entity that supports
 /// [`Interaction`]s, such as a button, to change its [`BackgroundColor`] based
@@ -27,10 +22,6 @@ pub struct InteractionPalette {
     pub hovered: Color,
     pub pressed: Color,
 }
-
-
-
-
 
 fn apply_interaction_palette(
     mut palette_query: Query<
@@ -67,8 +58,6 @@ impl FromWorld for InteractionAssets {
     }
 }
 
-
-
 fn play_on_hover_sound_effect(
     trigger: Trigger<Pointer<Over>>,
     mut commands: Commands,
@@ -98,5 +87,3 @@ fn play_on_click_sound_effect(
         commands.spawn(sound_effect(interaction_assets.click.clone()));
     }
 }
-
-
