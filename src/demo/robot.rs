@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
 use crate::{
-    asset_tracking::LoadResource, demo::blink::Blink, demo::bipper::Bipper, demo::synchronized::Synchronized,
-    screens::Screen,
+    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink,
+    demo::synchronized::Synchronized, screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -80,12 +80,10 @@ fn on_voxel_instance_ready(
         ));
     }
     if name.contains("bipper") {
-        entity_commands.insert((
-            Bipper {
+        entity_commands.insert((Bipper {
                 //audio_hover: robot_assets.audio_hover.clone(), //MODIFIER L'ASSET AUDIO ?
                 //audio_click: robot_assets.audio_click.clone(), //MODIFIER L'ASSET AUDIO ?
-            },
-        ));
+            },));
     }
     entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
         println!("{} was just clicked!", trigger.target());

@@ -18,14 +18,10 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn setup_audio(mut ew: EventWriter<PlayEvent<MusicChannel>>) {
-    println!("Setting up audio");
-    let event =
-        MusicChannel::play_event("track1bip1.ogg".into()).with_settings(PlaybackSettings::LOOP);
-    ew.write(event);
-}
+    let tracks = ["track1bip1.ogg", "track1bip2.ogg", "track1bip3.ogg"];
 
-// fn play_sfx(mut ew: EventWriter<PlayEvent<SfxChannel>>) {
-//     let event =
-//         SfxChannel::play_event(AudioFiles::FireOGG).with_settings(PlaybackSettings::DESPAWN);
-//     ew.write(event);
-// }
+    for track in tracks {
+        let event = MusicChannel::play_event(track.into()).with_settings(PlaybackSettings::LOOP);
+        ew.write(event);
+    }
+}
