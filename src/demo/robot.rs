@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
-use crate::{asset_tracking::LoadResource, demo::blink::Blink, screens::Screen};
+use crate::{
+    asset_tracking::LoadResource, demo::blink::Blink, demo::synchronized::Synchronized,
+    screens::Screen,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
@@ -61,12 +64,14 @@ fn on_voxel_instance_ready(
     let mut entity_commands = commands.entity(trigger.event().instance);
     if name.contains("blink") {
         let track = name.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
-        entity_commands.insert(Blink {
-            track,
-            is_on: true,
-            on_material: robot_assets.material.clone(),
-            off_material: robot_assets.material_no_emission.clone(),
-        });
+        entity_commands.insert((
+            Blink {
+                is_on: true,
+                on_material: robot_assets.material.clone(),
+                off_material: robot_assets.material_no_emission.clone(),
+            },
+            Synchronized::new(track),
+        ));
     }
     entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
         println!("{} was just clicked!", trigger.target());

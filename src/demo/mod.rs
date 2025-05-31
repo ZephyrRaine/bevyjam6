@@ -11,6 +11,8 @@ pub mod level;
 //pub mod player;
 pub mod blink;
 pub mod robot;
+pub mod synchronized;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         //animation::plugin,
@@ -19,5 +21,6 @@ pub(super) fn plugin(app: &mut App) {
         //player::plugin,
         robot::plugin,
         blink::plugin,
+        synchronized::plugin,
     ));
 }
