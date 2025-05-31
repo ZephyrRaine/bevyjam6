@@ -94,7 +94,7 @@ enum AppSystems {
 fn spawn_camera(mut commands: Commands) {
     commands.spawn((
         Name::new("Camera"),
-        PanOrbitCamera::default(),
+        Camera3d::default(),
         Camera {
             hdr: true,
             ..default()

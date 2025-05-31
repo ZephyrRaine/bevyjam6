@@ -6,6 +6,8 @@ use crate::{
     demo::synchronized::Synchronized, screens::Screen,
 };
 
+use super::draggable::Draggable;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
         // Using global settings because Bevy's `load_with_settings` has a couple of issues:
@@ -77,6 +79,7 @@ fn on_voxel_instance_ready(
                 off_material: robot_assets.material_no_emission.clone(),
             },
             Synchronized::new(track),
+            Draggable,
         ));
     }
     if name.contains("bipper") {

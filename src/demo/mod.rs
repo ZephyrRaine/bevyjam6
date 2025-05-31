@@ -14,6 +14,7 @@ pub mod blink;
 pub mod bipper;
 pub mod robot;
 pub mod synchronized;
+pub mod draggable;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         audio::plugin,
@@ -25,5 +26,6 @@ pub(super) fn plugin(app: &mut App) {
         blink::plugin,
         bipper::plugin,
         synchronized::plugin,
+        draggable::plugin,
     ));
 }
