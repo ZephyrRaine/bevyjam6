@@ -1,21 +1,18 @@
-use bevy::{prelude::*};
+use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
 use crate::{asset_tracking::LoadResource, screens::Screen};
 
-
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(
-        VoxScenePlugin {
-            // Using global settings because Bevy's `load_with_settings` has a couple of issues:
-            // https://github.com/bevyengine/bevy/issues/12320
-            // https://github.com/bevyengine/bevy/issues/11111
-            global_settings: Some(VoxLoaderSettings {
-                supports_remeshing: true,
-                ..default()
-            }),
-        },
-    );
+    app.add_plugins(VoxScenePlugin {
+        // Using global settings because Bevy's `load_with_settings` has a couple of issues:
+        // https://github.com/bevyengine/bevy/issues/12320
+        // https://github.com/bevyengine/bevy/issues/11111
+        global_settings: Some(VoxLoaderSettings {
+            supports_remeshing: true,
+            ..default()
+        }),
+    });
     app.register_type::<RobotAssets>();
     app.load_resource::<RobotAssets>();
 }

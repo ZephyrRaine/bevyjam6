@@ -17,6 +17,6 @@ pub(super) fn plugin(app: &mut App) {
         level::plugin,
         //movement::plugin,
         //player::plugin,
-        robot::plugin
+        robot::plugin,
     ));
 }
