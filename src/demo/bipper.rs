@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{audio::sound_effect};
+use crate::audio::sound_effect;
 
 use super::robot::RobotAssets;
 
