@@ -6,8 +6,6 @@ use crate::{
     demo::synchronized::Synchronized, screens::Screen,
 };
 
-use super::draggable::Draggable;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
         // Using global settings because Bevy's `load_with_settings` has a couple of issues:
@@ -31,10 +29,6 @@ pub struct RobotAssets {
     material: Handle<StandardMaterial>,
     #[dependency]
     material_no_emission: Handle<StandardMaterial>,
-    #[dependency]
-    pub audio_hover: Handle<AudioSource>,
-    #[dependency]
-    pub audio_click: Handle<AudioSource>,
 }
 
 impl FromWorld for RobotAssets {
@@ -44,8 +38,6 @@ impl FromWorld for RobotAssets {
             robot: assets.load("models/robot.vox"),
             material: assets.load("models/robot.vox#material"),
             material_no_emission: assets.load("models/robot.vox#material-no-emission"),
-            audio_hover: assets.load("audio/sound_effects/button_hover.ogg"),
-            audio_click: assets.load("audio/sound_effects/button_click.ogg"),
         }
     }
 }
@@ -70,24 +62,43 @@ fn on_voxel_instance_ready(
         return;
     };
     let mut entity_commands = commands.entity(trigger.event().instance);
-    if name.contains("blink") {
-        let track = name.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
-        entity_commands.insert((
-            Blink {
-                is_on: true,
-                on_material: robot_assets.material.clone(),
-                off_material: robot_assets.material_no_emission.clone(),
-            },
-            Synchronized::new(track),
-            Draggable,
-        ));
+
+    // Split by spaces to get individual component specifications
+    for component_spec in name.split_whitespace() {
+        // Split by ":" to get key and its parameters
+        let parts: Vec<&str> = component_spec.split(':').collect();
+        if parts.is_empty() {
+            continue;
+        }
+
+        let key = parts[0];
+        let params = &parts[1..];
+
+        match key {
+            "blink" => {
+                if let Some(track_str) = params.first() {
+                    if let Ok(track) = track_str.parse::<usize>() {
+                        entity_commands.insert((
+                            Blink {
+                                is_on: true,
+                                on_material: robot_assets.material.clone(),
+                                off_material: robot_assets.material_no_emission.clone(),
+                            },
+                            Synchronized::new(track),
+                        ));
+                    }
+                }
+            }
+            "bipper" => {
+                entity_commands.insert((Bipper {
+                    audio_hover_id: "bipper2.ogg".to_string(),
+                    audio_click_id: "bipper1.ogg".to_string(),
+                },));
+            }
+            _ => {}
+        }
     }
-    if name.contains("bipper") {
-        entity_commands.insert((Bipper {
-                //audio_hover: robot_assets.audio_hover.clone(), //MODIFIER L'ASSET AUDIO ?
-                //audio_click: robot_assets.audio_click.clone(), //MODIFIER L'ASSET AUDIO ?
-            },));
-    }
+
     entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
         println!("{} was just clicked!", trigger.target());
         // Get the underlying pointer event data

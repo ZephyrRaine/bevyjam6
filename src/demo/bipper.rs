@@ -1,45 +1,49 @@
 use bevy::prelude::*;
-
-use crate::{audio::sound_effect};
-
-use super::robot::RobotAssets;
+use bevy_audio_controller::prelude::{AudioChannel, ChannelRegistration, DelayMode, PlayEvent};
 
 #[derive(Component)]
 pub struct Bipper {
-    //pub audio_hover: Handle<AudioSource>,
-    //pub audio_click: Handle<AudioSource>,
+    pub audio_hover_id: String,
+    pub audio_click_id: String,
 }
 
+#[derive(Component, Default, AudioChannel, Reflect)]
+#[reflect(Component)]
+pub struct SfxChannel;
+
+pub type SfxEvent = PlayEvent<SfxChannel>;
+
 pub(super) fn plugin(app: &mut App) {
+    app.register_audio_channel::<SfxChannel>();
     app.add_observer(bipper_play_hover_audio);
     app.add_observer(bipper_play_click_audio);
 }
 
 pub fn bipper_play_hover_audio(
     trigger: Trigger<Pointer<Over>>,
-    query: Query<(), With<Bipper>>,
-    mut commands: Commands,
-    robot_assets: Option<Res<RobotAssets>>,
+    query: Query<&Bipper>,
+    mut ew: EventWriter<SfxEvent>,
 ) {
-    let Some(robot_assets) = robot_assets else {
-        return;
-    };
-
     if query.contains(trigger.target()) {
-        commands.spawn(sound_effect(robot_assets.audio_hover.clone()));
+        let bipper = query.get(trigger.target()).unwrap();
+        ew.write(
+            SfxChannel::play_event(bipper.audio_hover_id.clone().into())
+                .with_settings(PlaybackSettings::DESPAWN)
+                .with_delay_mode(DelayMode::Immediate),
+        );
     }
 }
 pub fn bipper_play_click_audio(
     trigger: Trigger<Pointer<Click>>,
-    query: Query<(), With<Bipper>>,
-    mut commands: Commands,
-    robot_assets: Option<Res<RobotAssets>>,
+    query: Query<&Bipper>,
+    mut ew: EventWriter<SfxEvent>,
 ) {
-    let Some(robot_assets) = robot_assets else {
-        return;
-    };
-
     if query.contains(trigger.target()) {
-        commands.spawn(sound_effect(robot_assets.audio_click.clone()));
+        let bipper = query.get(trigger.target()).unwrap();
+        ew.write(
+            SfxChannel::play_event(bipper.audio_click_id.clone().into())
+                .with_settings(PlaybackSettings::DESPAWN)
+                .with_delay_mode(DelayMode::Immediate),
+        );
     }
 }
