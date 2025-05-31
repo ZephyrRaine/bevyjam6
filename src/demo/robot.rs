@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
-use crate::{asset_tracking::LoadResource, screens::Screen};
+use crate::{asset_tracking::LoadResource, demo::blink::Blink, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
@@ -22,6 +22,10 @@ pub(super) fn plugin(app: &mut App) {
 pub struct RobotAssets {
     #[dependency]
     robot: Handle<Scene>,
+    #[dependency]
+    material: Handle<StandardMaterial>,
+    #[dependency]
+    material_no_emission: Handle<StandardMaterial>,
 }
 
 impl FromWorld for RobotAssets {
@@ -29,6 +33,8 @@ impl FromWorld for RobotAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             robot: assets.load("models/robot.vox"),
+            material: assets.load("models/robot.vox#material"),
+            material_no_emission: assets.load("models/robot.vox#material-no-emission"),
         }
     }
 }
@@ -44,12 +50,24 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
         .observe(on_voxel_instance_ready);
 }
 
-fn on_voxel_instance_ready(trigger: Trigger<VoxelInstanceReady>, mut commands: Commands) {
-    let Some(_name) = &trigger.event().model_name else {
+fn on_voxel_instance_ready(
+    trigger: Trigger<VoxelInstanceReady>,
+    mut commands: Commands,
+    robot_assets: Res<RobotAssets>,
+) {
+    let Some(name) = &trigger.event().model_name else {
         return;
     };
     let mut entity_commands = commands.entity(trigger.event().instance);
-
+    if name.contains("blink") {
+        let track = name.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
+        entity_commands.insert(Blink {
+            track,
+            is_on: true,
+            on_material: robot_assets.material.clone(),
+            off_material: robot_assets.material_no_emission.clone(),
+        });
+    }
     entity_commands
         .observe(|mut trigger: Trigger<Pointer<Click>>| {
             println!("{} was just clicked!", trigger.target());
