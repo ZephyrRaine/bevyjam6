@@ -2,28 +2,10 @@
 
 use bevy::{color::palettes::tailwind::*, picking::pointer::PointerInteraction, prelude::*};
 
-use crate::{asset_tracking::LoadResource, screens::Screen};
+use crate::screens::Screen;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<LevelAssets>();
-    app.load_resource::<LevelAssets>();
     app.add_systems(Update, draw_mesh_intersections);
-}
-
-#[derive(Resource, Asset, Clone, Reflect)]
-#[reflect(Resource)]
-pub struct LevelAssets {
-    #[dependency]
-    music: Handle<AudioSource>,
-}
-
-impl FromWorld for LevelAssets {
-    fn from_world(world: &mut World) -> Self {
-        let assets = world.resource::<AssetServer>();
-        Self {
-            music: assets.load("audio/music/Fluffing A Duck.ogg"),
-        }
-    }
 }
 
 /// A system that spawns the main level.

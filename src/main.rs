@@ -12,6 +12,7 @@ mod screens;
 mod theme;
 
 use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*};
+use bevy_audio_controller::prelude::AudioControllerPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
 fn main() -> AppExit {
@@ -57,6 +58,7 @@ impl Plugin for AppPlugin {
                 }),
         );
 
+        app.add_plugins(AudioControllerPlugin);
         app.add_plugins(MeshPickingPlugin);
         app.add_plugins(EguiPlugin {
             enable_multipass_for_primary_context: true,

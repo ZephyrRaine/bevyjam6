@@ -21,6 +21,7 @@ tracing = { version = "0.1", features = [
 bevy_vox_scene = "0.19.0"
 bevy-inspector-egui = "0.31.0"
 bevy_panorbit_camera = "0.26.0"
+bevy_audio_controller = "0.4.0"
 
 # Tell `getrandom v0.3+` to use the `wasm_js` backend on Wasm.
 # See: <https://docs.rs/getrandom/0.3.3/getrandom/#webassembly-support>.
@@ -29,7 +30,6 @@ getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [patch.crates-io]
 getrandom = { git = "https://github.com/benfrankel/getrandom" }
-
 
 
 [features]

@@ -9,12 +9,13 @@ use bevy::prelude::*;
 pub mod level;
 //mod movement;
 //pub mod player;
+pub mod audio;
 pub mod blink;
 pub mod robot;
 pub mod synchronized;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
+        audio::plugin,
         //animation::plugin,
         level::plugin,
         //movement::plugin,
