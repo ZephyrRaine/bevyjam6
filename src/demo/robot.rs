@@ -62,23 +62,43 @@ fn on_voxel_instance_ready(
         return;
     };
     let mut entity_commands = commands.entity(trigger.event().instance);
-    if name.contains("blink") {
-        let track = name.split(" ").nth(1).unwrap().parse::<usize>().unwrap();
-        entity_commands.insert((
-            Blink {
-                is_on: true,
-                on_material: robot_assets.material.clone(),
-                off_material: robot_assets.material_no_emission.clone(),
-            },
-            Synchronized::new(track),
-        ));
+
+    // Split by spaces to get individual component specifications
+    for component_spec in name.split_whitespace() {
+        // Split by ":" to get key and its parameters
+        let parts: Vec<&str> = component_spec.split(':').collect();
+        if parts.is_empty() {
+            continue;
+        }
+
+        let key = parts[0];
+        let params = &parts[1..];
+
+        match key {
+            "blink" => {
+                if let Some(track_str) = params.first() {
+                    if let Ok(track) = track_str.parse::<usize>() {
+                        entity_commands.insert((
+                            Blink {
+                                is_on: true,
+                                on_material: robot_assets.material.clone(),
+                                off_material: robot_assets.material_no_emission.clone(),
+                            },
+                            Synchronized::new(track),
+                        ));
+                    }
+                }
+            }
+            "bipper" => {
+                entity_commands.insert((Bipper {
+                    audio_hover_id: "bipper2.ogg".to_string(),
+                    audio_click_id: "bipper1.ogg".to_string(),
+                },));
+            }
+            _ => {}
+        }
     }
-    if name.contains("bipper") {
-        entity_commands.insert((Bipper {
-                audio_hover_id: "bipper2.ogg".to_string(),
-                audio_click_id: "bipper1.ogg".to_string(),
-            },));
-    }
+
     entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
         println!("{} was just clicked!", trigger.target());
         // Get the underlying pointer event data
