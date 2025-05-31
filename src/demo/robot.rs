@@ -76,18 +76,18 @@ fn on_voxel_instance_ready(
 
         match key {
             "blink" => {
+                entity_commands.insert(Blink {
+                    is_on: true,
+                    on_material: robot_assets.material.clone(),
+                    off_material: robot_assets.material_no_emission.clone(),
+                });
                 if let Some(track_str) = params.first() {
                     if let Ok(track) = track_str.parse::<usize>() {
-                        entity_commands.insert((
-                            Blink {
-                                is_on: true,
-                                on_material: robot_assets.material.clone(),
-                                off_material: robot_assets.material_no_emission.clone(),
-                            },
-                            Synchronized::new(track),
-                        ));
+                        entity_commands.insert(Synchronized::new(track));
+                        break;
                     }
                 }
+                entity_commands.insert(Synchronized::new(0));
             }
             "bipper" => {
                 entity_commands.insert((Bipper {
