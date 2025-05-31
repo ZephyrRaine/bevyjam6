@@ -27,39 +27,13 @@ impl FromWorld for LevelAssets {
 }
 
 /// A system that spawns the main level.
-pub fn spawn_level(
-    mut commands: Commands,
-    mut mesh_assets: ResMut<Assets<Mesh>>,
-    mut material_assets: ResMut<Assets<StandardMaterial>>,
-) {
+pub fn spawn_level(mut commands: Commands) {
     commands.spawn((
         Name::new("Level"),
         Transform::default(),
         Visibility::default(),
         StateScoped(Screen::Gameplay),
     ));
-
-    let ball_mesh = mesh_assets.add(Cuboid::new(10.0, 10.0, 10.0));
-    let ball_material = material_assets.add(StandardMaterial {
-        base_color: Color::linear_rgb(1.0, 0.0, 1.0),
-        ..Default::default()
-    });
-    println!("I was just spawned!");
-
-    commands
-        .spawn((
-            Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-            Mesh3d(ball_mesh.clone()),
-            MeshMaterial3d(ball_material),
-            StateScoped(Screen::Gameplay),
-        ))
-        .observe(|mut trigger: Trigger<Pointer<Click>>| {
-            println!("I was just clicked!");
-            // Get the underlying pointer event data
-            let _click_event: &Pointer<Click> = trigger.event();
-            // Stop the event from bubbling up the entity hierarchy
-            trigger.propagate(false);
-        });
 
     commands.spawn((
         DirectionalLight::default(),

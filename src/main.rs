@@ -11,7 +11,7 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, pbr::Atmosphere, prelude::*};
+use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*};
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 
 fn main() -> AppExit {
@@ -93,6 +93,11 @@ fn spawn_camera(mut commands: Commands) {
         Camera3d::default(),
         Camera {
             hdr: true,
+            ..default()
+        },
+        Bloom {
+            intensity: 0.3,
+            scale: Vec2::new(2.4, 1.0),
             ..default()
         },
         Transform::from_xyz(30.0, 30.0, 120.0).looking_at(Vec3::Y * 8.0, Vec3::Y),
