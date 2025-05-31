@@ -14,3 +14,10 @@ Check out the [documentation](https://github.com/TheBevyFlock/bevy_new_2d/blob/m
 ## Synchronized
 
 - Peut suivre la track 0, 1 ou 2 pour s'adapter à différents beats de la musique
+
+## Musique
+
+-Track 1 90bpm
+-Bip 1 /8
+-Bip 2 *1.5
+-bip 3 1
