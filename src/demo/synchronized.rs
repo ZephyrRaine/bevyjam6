@@ -18,7 +18,7 @@ impl FromWorld for SyncTracks {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Synchronized {
     pub track: usize,
 }
@@ -26,12 +26,6 @@ pub struct Synchronized {
 impl Synchronized {
     pub fn new(track: usize) -> Self {
         Self { track }
-    }
-}
-
-impl Default for Synchronized {
-    fn default() -> Self {
-        Self { track: 0 }
     }
 }
 
