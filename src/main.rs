@@ -13,7 +13,7 @@ mod theme;
 
 use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*};
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
-use bevy_panorbit_camera::{PanOrbitCamera,PanOrbitCameraPlugin,TouchControls};
+use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin, TouchControls};
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
 }
@@ -92,7 +92,7 @@ enum AppSystems {
 fn spawn_camera(mut commands: Commands) {
     commands.spawn((
         Name::new("Camera"),
-        Camera3d::default(),
+        PanOrbitCamera::default(),
         Camera {
             hdr: true,
             ..default()
