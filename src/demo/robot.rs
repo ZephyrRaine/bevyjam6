@@ -75,13 +75,5 @@ fn on_voxel_instance_ready(
             let _click_event: &Pointer<Click> = trigger.event();
             // Stop the event from bubbling up the entity hierarchy
             trigger.propagate(false);
-        })
-        .observe(rotate_on_drag);
-}
-
-/// An observer to rotate an entity when it is dragged
-fn rotate_on_drag(drag: Trigger<Pointer<Drag>>, mut transforms: Query<&mut Transform>) {
-    let mut transform = transforms.get_mut(drag.target()).unwrap();
-    transform.rotate_y(drag.delta.x * 0.02);
-    transform.rotate_x(drag.delta.y * 0.02);
+        });
 }
