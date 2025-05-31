@@ -13,7 +13,7 @@ mod theme;
 
 use bevy::{asset::AssetMetaCheck, pbr::Atmosphere, prelude::*};
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
-
+use bevy_panorbit_camera::{PanOrbitCamera,PanOrbitCameraPlugin,TouchControls};
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
 }
@@ -71,6 +71,8 @@ impl Plugin for AppPlugin {
             screens::plugin,
             theme::plugin,
         ));
+
+        app.add_plugins(PanOrbitCameraPlugin);
     }
 }
 
