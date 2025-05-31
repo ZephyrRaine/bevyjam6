@@ -7,13 +7,8 @@ use crate::screens::Screen;
 #[reflect(Component)]
 struct MusicChannel;
 
-#[derive(Component, Default, AudioChannel, Reflect)]
-#[reflect(Component)]
-struct SfxChannel;
-
 pub(super) fn plugin(app: &mut App) {
     app.register_audio_channel::<MusicChannel>();
-    app.register_audio_channel::<SfxChannel>();
     app.add_systems(OnEnter(Screen::Gameplay), setup_audio);
 }
 
