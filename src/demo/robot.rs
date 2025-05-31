@@ -6,6 +6,8 @@ use crate::{
     demo::synchronized::Synchronized, screens::Screen,
 };
 
+use super::draggable::Draggable;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
         // Using global settings because Bevy's `load_with_settings` has a couple of issues:
@@ -93,7 +95,7 @@ fn on_voxel_instance_ready(
                 entity_commands.insert((Bipper {
                     audio_hover_id: "bipper2.ogg".to_string(),
                     audio_click_id: "bipper1.ogg".to_string(),
-                },));
+                }, Draggable));
             }
             _ => {}
         }
