@@ -2,15 +2,11 @@
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{
-    demo::audio::setup_audio, demo::level::spawn_level, demo::robot::spawn_robot, screens::Screen,
-};
+use crate::{demo::level::spawn_level, demo::robot::spawn_robot, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Gameplay), spawn_level);
     app.add_systems(OnEnter(Screen::Gameplay), spawn_robot);
-    app.add_systems(OnEnter(Screen::Gameplay), setup_audio.after(spawn_robot));
-
     app.add_systems(
         Update,
         return_to_title_screen
