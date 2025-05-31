@@ -2,7 +2,8 @@ use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
 use crate::{
-    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink,
+    asset_tracking::LoadResource,
+    demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
     demo::synchronized::Synchronized, screens::Screen,
 };
 
@@ -107,6 +108,27 @@ fn on_voxel_instance_ready(
                 entity_commands.insert((Bipper {
                     audio_hover_id: format!("bipper{}.ogg", track_hover),
                     audio_click_id: format!("bipper{}.ogg", track_click),
+                },));
+            }
+            "bumper" => {
+                let mut bump_hover = 1.1;
+                let mut bump_pressed = 0.9;
+
+                if let Some(bump_str) = params.get(0) {
+                    if let Ok(bump) = bump_str.parse::<f32>() {
+                        bump_hover = bump;
+                    }
+                }
+                if let Some(bump_str) = params.get(1) {
+                    if let Ok(bump) = bump_str.parse::<f32>() {
+                        bump_pressed = bump;
+                    }
+                }
+
+                entity_commands.insert((Bumper {
+                    bump_hover: bump_hover,
+                    bump_pressed: bump_pressed,
+                    target_scale: 1.0,
                 },));
             }
             _ => {}

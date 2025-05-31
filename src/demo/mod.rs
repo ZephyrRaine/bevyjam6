@@ -12,6 +12,7 @@ pub mod level;
 pub mod audio;
 pub mod blink;
 pub mod bipper;
+pub mod bumper;
 pub mod robot;
 pub mod synchronized;
 pub(super) fn plugin(app: &mut App) {
@@ -24,6 +25,7 @@ pub(super) fn plugin(app: &mut App) {
         robot::plugin,
         blink::plugin,
         bipper::plugin,
+        bumper::plugin,
         synchronized::plugin,
     ));
 }
