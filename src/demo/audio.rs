@@ -5,13 +5,8 @@ use bevy_audio_controller::prelude::*;
 #[reflect(Component)]
 pub struct MusicChannel;
 
-#[derive(Component, Default, AudioChannel, Reflect)]
-#[reflect(Component)]
-struct SfxChannel;
-
 pub(super) fn plugin(app: &mut App) {
     app.register_audio_channel::<MusicChannel>();
-    app.register_audio_channel::<SfxChannel>();
 }
 
 pub fn setup_audio(mut ew: EventWriter<PlayEvent<MusicChannel>>) {

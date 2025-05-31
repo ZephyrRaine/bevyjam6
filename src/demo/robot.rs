@@ -29,10 +29,6 @@ pub struct RobotAssets {
     material: Handle<StandardMaterial>,
     #[dependency]
     material_no_emission: Handle<StandardMaterial>,
-    #[dependency]
-    pub audio_hover: Handle<AudioSource>,
-    #[dependency]
-    pub audio_click: Handle<AudioSource>,
 }
 
 impl FromWorld for RobotAssets {
@@ -42,8 +38,6 @@ impl FromWorld for RobotAssets {
             robot: assets.load("models/robot.vox"),
             material: assets.load("models/robot.vox#material"),
             material_no_emission: assets.load("models/robot.vox#material-no-emission"),
-            audio_hover: assets.load("audio/sound_effects/button_hover.ogg"),
-            audio_click: assets.load("audio/sound_effects/button_click.ogg"),
         }
     }
 }
@@ -81,8 +75,8 @@ fn on_voxel_instance_ready(
     }
     if name.contains("bipper") {
         entity_commands.insert((Bipper {
-                //audio_hover: robot_assets.audio_hover.clone(), //MODIFIER L'ASSET AUDIO ?
-                //audio_click: robot_assets.audio_click.clone(), //MODIFIER L'ASSET AUDIO ?
+                audio_hover_id: "bipper2.ogg".to_string(),
+                audio_click_id: "bipper1.ogg".to_string(),
             },));
     }
     entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
