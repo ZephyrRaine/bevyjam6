@@ -118,7 +118,7 @@ fn on_voxel_instance_ready(
                 let mut track_hover = 1;
                 let mut track_click = 2;
 
-                if let Some(track_str) = params.get(0) {
+                if let Some(track_str) = params.first() {
                     if let Ok(track) = track_str.parse::<usize>() {
                         track_hover = track;
                     }
@@ -138,7 +138,7 @@ fn on_voxel_instance_ready(
                 let mut bump_hover = 1.1;
                 let mut bump_pressed = 0.9;
 
-                if let Some(bump_str) = params.get(0) {
+                if let Some(bump_str) = params.first() {
                     if let Ok(bump) = bump_str.parse::<f32>() {
                         bump_hover = bump;
                     }
@@ -150,8 +150,8 @@ fn on_voxel_instance_ready(
                 }
 
                 entity_commands.insert((Bumper {
-                    bump_hover: bump_hover,
-                    bump_pressed: bump_pressed,
+                    bump_hover,
+                    bump_pressed,
                     target_scale: 1.0,
                 },));
             }
@@ -169,7 +169,7 @@ fn on_voxel_instance_ready(
                         slider_counter.puzzle_id,
                         slider_counter.slider_id,
                     ));
-                    slider_counter.slider_id = slider_counter.slider_id + 1;
+                    slider_counter.slider_id += 1;
                 }
             }
             _ => {}

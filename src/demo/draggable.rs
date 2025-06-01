@@ -93,8 +93,8 @@ fn on_drag(
         let mut target_position = initial_position + Vec3::new(0.0, disp_value, 0.0);
 
         // Apply bounds
-        if target_position.y > draggable.base_position.y as f32 {
-            target_position.y = draggable.base_position.y as f32;
+        if target_position.y > draggable.base_position.y {
+            target_position.y = draggable.base_position.y;
         }
         if target_position.y < draggable.base_position.y + draggable.offset as f32 {
             target_position.y = draggable.base_position.y + draggable.offset as f32;
@@ -124,10 +124,6 @@ fn apply_grab(
     mut window: Single<&mut Window, With<PrimaryWindow>>,
 ) {
     for grab in ev.read() {
-        if **grab {
-            window.cursor_options.visible = false;
-        } else {
-            window.cursor_options.visible = true;
-        }
+        window.cursor_options.visible = !(**grab)
     }
 }
