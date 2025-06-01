@@ -7,6 +7,8 @@ use crate::{
 };
 
 use super::draggable::Draggable;
+use super::puzzle::PuzzleSolver;
+use super::slider::Slider;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
@@ -20,6 +22,10 @@ pub(super) fn plugin(app: &mut App) {
     });
     app.register_type::<RobotAssets>();
     app.load_resource::<RobotAssets>();
+    app.insert_resource(SliderCounter {
+        slider_id: 0,
+        puzzle_id: 0,
+    });
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -31,6 +37,12 @@ pub struct RobotAssets {
     material: Handle<StandardMaterial>,
     #[dependency]
     material_no_emission: Handle<StandardMaterial>,
+}
+
+#[derive(Resource)]
+pub struct SliderCounter {
+    pub slider_id: usize,
+    pub puzzle_id: u32,
 }
 
 impl FromWorld for RobotAssets {
@@ -53,6 +65,15 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
             StateScoped(Screen::Gameplay),
         ))
         .observe(on_voxel_instance_ready);
+
+    commands.spawn((
+        Name::new("PuzzleSolver"),
+        PuzzleSolver {
+            puzzle_id: 0,
+            correct_positions: vec![-4, -3, 0, -1],
+            current_positions: vec![0, 0, 0, 0],
+        },
+    ));
 }
 
 fn on_voxel_instance_ready(
@@ -60,6 +81,7 @@ fn on_voxel_instance_ready(
     mut commands: Commands,
     robot_assets: Res<RobotAssets>,
     instance_query: Query<&Transform, With<VoxelModelInstance>>,
+    mut slider_counter: ResMut<SliderCounter>,
 ) {
     let Some(name) = &trigger.event().model_name else {
         return;
@@ -141,12 +163,14 @@ fn on_voxel_instance_ready(
                         .get(trigger.event().instance)
                         .unwrap()
                         .translation,
-                    if params.len() > 2 {
-                        Some(params[2].parse::<i32>().unwrap())
-                    } else {
-                        None
-                    },
                 ));
+                if params.len() > 2 {
+                    entity_commands.insert(Slider::new(
+                        slider_counter.puzzle_id,
+                        slider_counter.slider_id,
+                    ));
+                    slider_counter.slider_id = slider_counter.slider_id + 1;
+                }
             }
             _ => {}
         }

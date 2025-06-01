@@ -3,16 +3,19 @@ use bevy::window::PrimaryWindow;
 
 use crate::screens::Screen;
 
+use super::puzzle::PuzzleEvent;
+use super::slider::Slider;
+
 #[derive(Event, Deref)]
 struct GrabEvent(bool);
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Draggable {
     pub axis: String,
     pub offset: i32,
     pub base_position: Vec3,
-    pub correct_position: Option<i32>,
+    //    pub correct_position: Option<i32>,
     initial_drag_position: Option<Vec3>,
     snap_interval: f32,
 }
@@ -22,13 +25,13 @@ impl Draggable {
         axis: String,
         offset: i32,
         base_position: Vec3,
-        correct_position: Option<i32>,
+        //    correct_position: Option<i32>,
     ) -> Self {
         Self {
             axis,
             offset,
             base_position,
-            correct_position,
+            //      correct_position,
             initial_drag_position: None,
             snap_interval: 1.0, // Snap every 50 units
         }
@@ -70,14 +73,15 @@ fn on_drag_end(drag: Trigger<Pointer<DragEnd>>, mut grab_events: EventWriter<Gra
 
 fn on_drag(
     drag: Trigger<Pointer<Drag>>,
-    mut transforms: Query<(&mut Transform, &mut Draggable)>,
+    mut transforms: Query<(&mut Transform, &mut Draggable, Option<&Slider>)>,
     time: Res<Time>,
+    mut puzzle_events: EventWriter<PuzzleEvent>,
 ) {
     if drag.button != PointerButton::Primary {
         return;
     }
 
-    if let Ok((mut transform, draggable)) = transforms.get_mut(drag.target) {
+    if let Ok((mut transform, draggable, slider)) = transforms.get_mut(drag.target) {
         let disp_value = -drag.distance.y * time.delta_secs() * 3.0;
 
         // Get the initial position when drag started
@@ -88,19 +92,26 @@ fn on_drag(
         // Calculate target position relative to initial drag position
         let mut target_position = initial_position + Vec3::new(0.0, disp_value, 0.0);
 
-        // Apply snapping only if correct_position is provided
-        if let Some(_) = draggable.correct_position {
-            let snap_value =
-                (target_position.y / draggable.snap_interval).round() * draggable.snap_interval;
-            target_position.y = snap_value;
-        }
-
         // Apply bounds
         if target_position.y > draggable.base_position.y as f32 {
             target_position.y = draggable.base_position.y as f32;
         }
         if target_position.y < draggable.base_position.y + draggable.offset as f32 {
             target_position.y = draggable.base_position.y + draggable.offset as f32;
+        }
+
+        if let Some(slider) = slider {
+            let snap_value =
+                (target_position.y / draggable.snap_interval).round() * draggable.snap_interval;
+            target_position.y = snap_value;
+            if transform.translation.y != target_position.y {
+                puzzle_events.write(PuzzleEvent {
+                    puzzle_id: slider.puzzle_id,
+                    slider_id: slider.slider_id,
+                    slider_position: ((snap_value - draggable.base_position.y)
+                        / draggable.snap_interval) as i32,
+                });
+            }
         }
 
         // Smoothly interpolate to the target position

@@ -12,9 +12,11 @@ pub mod level;
 pub mod audio;
 pub mod bipper;
 pub mod blink;
-pub mod draggable;
 pub mod bumper;
+pub mod draggable;
+pub mod puzzle;
 pub mod robot;
+pub mod slider;
 pub mod synchronized;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
@@ -29,5 +31,6 @@ pub(super) fn plugin(app: &mut App) {
         bumper::plugin,
         synchronized::plugin,
         draggable::plugin,
+        puzzle::plugin,
     ));
 }
