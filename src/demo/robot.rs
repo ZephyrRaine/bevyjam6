@@ -2,10 +2,11 @@ use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
 
 use crate::{
-    asset_tracking::LoadResource,
-    demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
+    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
     demo::synchronized::Synchronized, screens::Screen,
 };
+
+use super::draggable::Draggable;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(VoxScenePlugin {
@@ -130,6 +131,9 @@ fn on_voxel_instance_ready(
                     bump_pressed: bump_pressed,
                     target_scale: 1.0,
                 },));
+            }
+            "slider" => {
+                entity_commands.insert(Draggable);
             }
             _ => {}
         }

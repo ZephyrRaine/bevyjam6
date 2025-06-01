@@ -11,8 +11,12 @@ fn on_drag(
     mut transforms: Query<(&mut Transform, &Draggable)>,
     time: Res<Time>,
 ) {
+    if drag.button != PointerButton::Primary {
+        return;
+    }
+
     if let Ok((mut transform, _draggable)) = transforms.get_mut(drag.target) {
-        let sign = drag.delta.x.signum() * drag.delta.length() * 0.5;
-        transform.translation += Vec3::new(sign * time.delta_secs(), 0.0, 0.0);
+        let sign = -drag.delta.y.signum() * drag.delta.length() * 0.5;
+        transform.translation += Vec3::new(0.0, sign * time.delta_secs(), 0.0);
     }
 }
