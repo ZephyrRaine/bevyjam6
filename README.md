@@ -21,3 +21,18 @@ Check out the [documentation](https://github.com/TheBevyFlock/bevy_new_2d/blob/m
 -Bip 1 /8
 -Bip 2 *1.5
 -bip 3 1
+
+
+-Track2 100 bpm (0.6s)
+
+bip1 : /2 (1.2s)
+bip2 : x1 (0.6s)
+bip3 : x1 (0.6s)
+bip4 : /8 (4.8s)
+
+
+bip5 : /2 (1.2s)
+bip6 : x1 (0.6s)
+bip7 : x1 (0.6s)
+bip8 : /8 (4.8s)
+
