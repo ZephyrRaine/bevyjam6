@@ -94,7 +94,12 @@ enum AppSystems {
 fn spawn_camera(mut commands: Commands) {
     commands.spawn((
         Name::new("Camera"),
-        PanOrbitCamera::default(),
+        PanOrbitCamera {
+            button_orbit: MouseButton::Right,
+            button_pan: MouseButton::Middle,
+            target_focus: Vec3::Y * 160.0,
+            ..default()
+        },
         Camera {
             hdr: true,
             ..default()
@@ -104,7 +109,7 @@ fn spawn_camera(mut commands: Commands) {
             scale: Vec2::new(2.4, 1.0),
             ..default()
         },
-        Transform::from_xyz(30.0, 30.0, 120.0).looking_at(Vec3::Y * 8.0, Vec3::Y),
+        Transform::from_xyz(30.0, 113.0, 120.0).looking_at(Vec3::Y * 160.0, Vec3::Y),
         Atmosphere::EARTH,
     ));
 }

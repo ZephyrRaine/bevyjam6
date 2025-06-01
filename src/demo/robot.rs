@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady};
+use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance};
 
 use crate::{
     asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
@@ -59,6 +59,7 @@ fn on_voxel_instance_ready(
     trigger: Trigger<VoxelInstanceReady>,
     mut commands: Commands,
     robot_assets: Res<RobotAssets>,
+    instance_query: Query<&Transform, With<VoxelModelInstance>>,
 ) {
     let Some(name) = &trigger.event().model_name else {
         return;
@@ -133,7 +134,14 @@ fn on_voxel_instance_ready(
                 },));
             }
             "slider" => {
-                entity_commands.insert(Draggable);
+                entity_commands.insert(Draggable::new(
+                    params[0].to_string(),
+                    params[1].parse::<i32>().unwrap(),
+                    instance_query
+                        .get(trigger.event().instance)
+                        .unwrap()
+                        .translation,
+                ));
             }
             _ => {}
         }
