@@ -20,7 +20,6 @@ impl Bumper {
     }
 }
 
-
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, scale_update);
     app.add_observer(bump_play_hover);
@@ -38,34 +37,22 @@ fn scale_update(mut bumps: Query<(&mut Transform, &Bumper)>, fixed_time: Res<Tim
     }
 }
 
-pub fn bump_play_hover(
-    trigger: Trigger<Pointer<Over>>,
-    mut query: Query<&mut Bumper>,
-) {
+pub fn bump_play_hover(trigger: Trigger<Pointer<Over>>, mut query: Query<&mut Bumper>) {
     if let Ok(mut bumper) = query.get_mut(trigger.target()) {
         bumper.set_target_hover();
     }
 }
-pub fn bump_play_pressed(
-    trigger: Trigger<Pointer<Pressed>>,
-    mut query: Query<&mut Bumper>,
-) {
+pub fn bump_play_pressed(trigger: Trigger<Pointer<Pressed>>, mut query: Query<&mut Bumper>) {
     if let Ok(mut bumper) = query.get_mut(trigger.target()) {
         bumper.set_target_pressed();
     }
 }
-pub fn bump_play_released(
-    trigger: Trigger<Pointer<Released>>,
-    mut query: Query<&mut Bumper>,
-) {
+pub fn bump_play_released(trigger: Trigger<Pointer<Released>>, mut query: Query<&mut Bumper>) {
     if let Ok(mut bumper) = query.get_mut(trigger.target()) {
         bumper.set_target_default();
     }
 }
-pub fn bump_play_out(
-    trigger: Trigger<Pointer<Out>>,
-    mut query: Query<&mut Bumper>,
-) {
+pub fn bump_play_out(trigger: Trigger<Pointer<Out>>, mut query: Query<&mut Bumper>) {
     if let Ok(mut bumper) = query.get_mut(trigger.target()) {
         bumper.set_target_default();
     }
