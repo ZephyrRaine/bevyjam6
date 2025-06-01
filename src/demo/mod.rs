@@ -10,8 +10,9 @@ pub mod level;
 //mod movement;
 //pub mod player;
 pub mod audio;
-pub mod blink;
 pub mod bipper;
+pub mod blink;
+pub mod draggable;
 pub mod bumper;
 pub mod robot;
 pub mod synchronized;
@@ -27,5 +28,6 @@ pub(super) fn plugin(app: &mut App) {
         bipper::plugin,
         bumper::plugin,
         synchronized::plugin,
+        draggable::plugin,
     ));
 }
