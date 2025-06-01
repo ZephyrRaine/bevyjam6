@@ -12,13 +12,11 @@ mod screens;
 mod theme;
 
 use bevy::{
-    asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*, transform,
+    asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*,
 };
 use bevy_audio_controller::prelude::AudioControllerPlugin;
-use bevy_inspector_egui::{bevy_egui::EguiPlugin, egui::pos2, quick::WorldInspectorPlugin};
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
-use demo::draggable::Draggable;
-use demo::robot::RobotAssets;
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
 }
