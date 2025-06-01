@@ -11,9 +11,7 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{
-    asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*,
-};
+use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*};
 use bevy_audio_controller::prelude::AudioControllerPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
@@ -38,7 +36,6 @@ impl Plugin for AppPlugin {
 
         // Spawn the main camera.
         app.add_systems(Startup, spawn_camera);
-        app.add_systems(Update, debug_camera_position);
 
         // Add Bevy plugins.
         app.add_plugins(
@@ -116,10 +113,4 @@ fn spawn_camera(mut commands: Commands) {
         Transform::from_xyz(1.909522, 44.110947, -105.49327),
         Atmosphere::EARTH,
     ));
-}
-
-fn debug_camera_position(query: Query<&Transform, With<Camera>>) {
-    for transform in &query {
-        println!("Camera pos: {:?}", transform.translation);
-    }
 }

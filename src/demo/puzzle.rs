@@ -30,10 +30,6 @@ fn update_puzzle_solver(
             }
             puzzle_solver.current_positions[ev.slider_id] = ev.slider_position;
 
-            //print current positions
-            println!("Current positions: {:?}", puzzle_solver.current_positions);
-            println!("Correct positions: {:?}", puzzle_solver.correct_positions);
-            // Check if puzzle is solved
             if puzzle_solver.current_positions == puzzle_solver.correct_positions {
                 println!("Puzzle {} solved!", ev.puzzle_id);
             }
