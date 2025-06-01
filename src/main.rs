@@ -11,12 +11,14 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*, transform};
+use bevy::{
+    asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*, transform,
+};
 use bevy_audio_controller::prelude::AudioControllerPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, egui::pos2, quick::WorldInspectorPlugin};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
-use demo::robot::RobotAssets;
 use demo::draggable::Draggable;
+use demo::robot::RobotAssets;
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
 }
@@ -38,7 +40,7 @@ impl Plugin for AppPlugin {
 
         // Spawn the main camera.
         app.add_systems(Startup, spawn_camera);
-        app.add_systems(Update,debug_camera_position);
+        app.add_systems(Update, debug_camera_position);
 
         // Add Bevy plugins.
         app.add_plugins(
@@ -78,7 +80,7 @@ impl Plugin for AppPlugin {
         ));
 
         app.add_plugins(PanOrbitCameraPlugin);
-        }
+    }
 }
 
 /// High-level groupings of systems for the app in the `Update` schedule.
@@ -100,8 +102,8 @@ fn spawn_camera(mut commands: Commands) {
         PanOrbitCamera {
             button_orbit: MouseButton::Right,
             button_pan: MouseButton::Middle,
-            focus:vec3(0.8056799, 40.183243, -5.5687037),
-          //  radius: Some(100.0),
+            focus: vec3(0.8056799, 40.183243, -5.5687037),
+            //  radius: Some(100.0),
             ..default()
         },
         Camera {
@@ -113,7 +115,6 @@ fn spawn_camera(mut commands: Commands) {
             scale: Vec2::new(2.4, 1.0),
             ..default()
         },
-
         Transform::from_xyz(1.909522, 44.110947, -105.49327),
         Atmosphere::EARTH,
     ));
