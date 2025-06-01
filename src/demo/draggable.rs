@@ -1,48 +1,122 @@
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
+
+use crate::screens::Screen;
+
+#[derive(Event, Deref)]
+struct GrabEvent(bool);
+
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct Draggable {
     pub axis: String,
     pub offset: i32,
-    base_position: Vec3,
+    pub base_position: Vec3,
+    pub correct_position: Option<i32>,
+    initial_drag_position: Option<Vec3>,
+    snap_interval: f32,
 }
 
 impl Draggable {
-    pub fn new(axis: String, offset: i32, base_position: Vec3) -> Self {
+    pub fn new(
+        axis: String,
+        offset: i32,
+        base_position: Vec3,
+        correct_position: Option<i32>,
+    ) -> Self {
         Self {
             axis,
             offset,
             base_position,
+            correct_position,
+            initial_drag_position: None,
+            snap_interval: 1.0, // Snap every 50 units
         }
     }
 }
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Draggable>();
+    app.add_event::<GrabEvent>();
+    app.add_observer(on_drag_start);
     app.add_observer(on_drag);
+    app.add_observer(on_drag_end);
+    app.add_systems(Update, apply_grab.run_if(in_state(Screen::Gameplay)));
+}
+
+fn on_drag_start(
+    drag: Trigger<Pointer<DragStart>>,
+    mut transforms: Query<(&mut Transform, &mut Draggable)>,
+    mut grab_events: EventWriter<GrabEvent>,
+) {
+    if drag.button != PointerButton::Primary {
+        return;
+    }
+
+    grab_events.write(GrabEvent(true));
+
+    if let Ok((transform, mut draggable)) = transforms.get_mut(drag.target) {
+        draggable.initial_drag_position = Some(transform.translation);
+    }
+}
+
+fn on_drag_end(drag: Trigger<Pointer<DragEnd>>, mut grab_events: EventWriter<GrabEvent>) {
+    if drag.button != PointerButton::Primary {
+        return;
+    }
+
+    grab_events.write(GrabEvent(false));
 }
 
 fn on_drag(
     drag: Trigger<Pointer<Drag>>,
-    mut transforms: Query<(&mut Transform, &Draggable)>,
+    mut transforms: Query<(&mut Transform, &mut Draggable)>,
     time: Res<Time>,
 ) {
     if drag.button != PointerButton::Primary {
         return;
     }
 
-    if let Ok((mut transform, _draggable)) = transforms.get_mut(drag.target) {
-        let disp_value = -drag.delta.y.signum() * drag.delta.length() * 0.5;
-        let mut target_position =
-            transform.translation + Vec3::new(0.0, disp_value * time.delta_secs(), 0.0);
+    if let Ok((mut transform, draggable)) = transforms.get_mut(drag.target) {
+        let disp_value = -drag.distance.y * time.delta_secs() * 3.0;
 
-        if target_position.y > _draggable.base_position.y as f32 {
-            target_position.y = _draggable.base_position.y as f32;
-        }
-        if target_position.y < _draggable.base_position.y + _draggable.offset as f32 {
-            target_position.y = _draggable.base_position.y + _draggable.offset as f32;
+        // Get the initial position when drag started
+        let initial_position = draggable
+            .initial_drag_position
+            .unwrap_or(transform.translation);
+
+        // Calculate target position relative to initial drag position
+        let mut target_position = initial_position + Vec3::new(0.0, disp_value, 0.0);
+
+        // Apply snapping only if correct_position is provided
+        if let Some(_) = draggable.correct_position {
+            let snap_value =
+                (target_position.y / draggable.snap_interval).round() * draggable.snap_interval;
+            target_position.y = snap_value;
         }
 
+        // Apply bounds
+        if target_position.y > draggable.base_position.y as f32 {
+            target_position.y = draggable.base_position.y as f32;
+        }
+        if target_position.y < draggable.base_position.y + draggable.offset as f32 {
+            target_position.y = draggable.base_position.y + draggable.offset as f32;
+        }
+
+        // Smoothly interpolate to the target position
         transform.translation = target_position;
+    }
+}
+
+fn apply_grab(
+    mut ev: EventReader<GrabEvent>,
+    mut window: Single<&mut Window, With<PrimaryWindow>>,
+) {
+    for grab in ev.read() {
+        if **grab {
+            window.cursor_options.visible = false;
+        } else {
+            window.cursor_options.visible = true;
+        }
     }
 }

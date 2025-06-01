@@ -141,6 +141,11 @@ fn on_voxel_instance_ready(
                         .get(trigger.event().instance)
                         .unwrap()
                         .translation,
+                    if params.len() > 2 {
+                        Some(params[2].parse::<i32>().unwrap())
+                    } else {
+                        None
+                    },
                 ));
             }
             _ => {}
