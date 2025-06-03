@@ -5,11 +5,25 @@ Check out the [documentation](https://github.com/TheBevyFlock/bevy_new_2d/blob/m
 
 # Components
 
+## Bipper
+
+- Un mesh qui a `bipper:n` dans le nom, où n est l'ID du fichier sonore `bipper{n}.ogg`
+- Il faut un fichier son avec l'ID existant (exemple: bipper4.ogg)
+
 ## Blink
 
 - Requires Synchronized, sinon par défaut ce sera la track 0 
-- Un mesh qui a `blink n` dans le nom, où n est 0, 1 ou 2 sera synchronisé avec la musique et clignotera (alterne entre emissive on et emissive off). 
-- Il faut que le material soit emissive dans l'onglet render de magicavoxel  
+- Un mesh qui a `blink:n` dans le nom, où n est 0, 1 ou 2 sera synchronisé avec la musique et clignotera (alterne entre emissive on et emissive off). 
+- Il faut que le material soit emissive dans l'onglet render de magicavoxel
+
+## Bumper
+
+- Un mesh qui a `bumper:x:y` dans le nom, où x et y sont des float correspondant respectivement au scale hover/click
+- Il est possible de rajouter `bumper` dans le nom sans paramètres (afin d'utiliser des paramètres par défauts)
+
+## Slider
+
+- TODO
 
 ## Synchronized
 

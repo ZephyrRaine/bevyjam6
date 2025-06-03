@@ -202,12 +202,4 @@ fn on_voxel_instance_ready(
             _ => {}
         }
     }
-
-    entity_commands.observe(|mut trigger: Trigger<Pointer<Click>>| {
-        println!("{} was just clicked!", trigger.target());
-        // Get the underlying pointer event data
-        let _click_event: &Pointer<Click> = trigger.event();
-        // Stop the event from bubbling up the entity hierarchy
-        trigger.propagate(false);
-    });
 }
