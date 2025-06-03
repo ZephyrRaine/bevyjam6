@@ -1,5 +1,8 @@
+use bevy::pbr::NotShadowCaster;
 use bevy::prelude::*;
-use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance};
+use bevy_vox_scene::{
+    UnitOffset, VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance,
+};
 
 use crate::{
     asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
@@ -17,6 +20,8 @@ pub(super) fn plugin(app: &mut App) {
         // https://github.com/bevyengine/bevy/issues/11111
         global_settings: Some(VoxLoaderSettings {
             supports_remeshing: true,
+            voxel_size: 1.0,
+            //            mesh_offset: UnitOffset::new(Vec3::new(1.0, 0.0, 0.0)),
             ..default()
         }),
     });
@@ -34,6 +39,8 @@ pub struct RobotAssets {
     #[dependency]
     robot: Handle<Scene>,
     #[dependency]
+    props: Handle<Scene>,
+    #[dependency]
     material: Handle<StandardMaterial>,
     #[dependency]
     material_no_emission: Handle<StandardMaterial>,
@@ -50,6 +57,7 @@ impl FromWorld for RobotAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             robot: assets.load("models/robot.vox"),
+            props: assets.load("models/props.vox"),
             material: assets.load("models/robot.vox#material"),
             material_no_emission: assets.load("models/robot.vox#material-no-emission"),
         }
@@ -66,6 +74,14 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
         ))
         .observe(on_voxel_instance_ready);
 
+    commands
+        .spawn((
+            Name::new("Props"),
+            SceneRoot(robot_assets.props.clone()),
+            Transform::from_xyz(0.0, 0.0, 0.0),
+        ))
+        .observe(on_pros_voxel_instance_ready);
+
     commands.spawn((
         Name::new("PuzzleSolver"),
         PuzzleSolver {
@@ -74,6 +90,17 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
             current_positions: vec![0, 0, 0, 0],
         },
     ));
+}
+
+fn on_pros_voxel_instance_ready(trigger: Trigger<VoxelInstanceReady>, mut commands: Commands) {
+    let Some(name) = &trigger.event().model_name else {
+        return;
+    };
+    let mut entity_commands = commands.entity(trigger.event().instance);
+
+    if name.contains("wall") {
+        entity_commands.insert(NotShadowCaster);
+    }
 }
 
 fn on_voxel_instance_ready(
