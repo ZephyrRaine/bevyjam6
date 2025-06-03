@@ -11,7 +11,12 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, core_pipeline::bloom::Bloom, pbr::Atmosphere, prelude::*};
+use bevy::{
+    asset::AssetMetaCheck,
+    core_pipeline::{bloom::Bloom, tonemapping::Tonemapping},
+    pbr::{Atmosphere, DirectionalLightShadowMap},
+    prelude::*,
+};
 use bevy_audio_controller::prelude::AudioControllerPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
@@ -36,7 +41,6 @@ impl Plugin for AppPlugin {
 
         // Spawn the main camera.
         app.add_systems(Startup, spawn_camera);
-
         // Add Bevy plugins.
         app.add_plugins(
             DefaultPlugins
@@ -57,7 +61,7 @@ impl Plugin for AppPlugin {
                     ..default()
                 }),
         );
-
+        app.insert_resource(DirectionalLightShadowMap { size: 4096 });
         app.add_plugins(AudioControllerPlugin);
         app.add_plugins(MeshPickingPlugin);
         app.add_plugins(EguiPlugin {
@@ -106,11 +110,12 @@ fn spawn_camera(mut commands: Commands) {
             ..default()
         },
         Bloom {
-            intensity: 0.3,
+            intensity: 0.1,
             scale: Vec2::new(2.4, 1.0),
             ..default()
         },
-        Transform::from_xyz(1.909522, 44.110947, -105.49327),
+        Tonemapping::BlenderFilmic,
         Atmosphere::EARTH,
+        Transform::from_xyz(1.909522, 44.110947, -105.49327),
     ));
 }

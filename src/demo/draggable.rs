@@ -1,8 +1,10 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+use bevy_audio_controller::prelude::{AudioChannel, DelayMode};
 
 use crate::screens::Screen;
 
+use super::bipper::{SfxChannel, SfxEvent};
 use super::puzzle::PuzzleEvent;
 use super::slider::Slider;
 
@@ -76,6 +78,7 @@ fn on_drag(
     mut transforms: Query<(&mut Transform, &mut Draggable, Option<&Slider>)>,
     time: Res<Time>,
     mut puzzle_events: EventWriter<PuzzleEvent>,
+    mut ew: EventWriter<SfxEvent>,
 ) {
     if drag.button != PointerButton::Primary {
         return;
@@ -111,6 +114,11 @@ fn on_drag(
                     slider_position: ((snap_value - draggable.base_position.y)
                         / draggable.snap_interval) as i32,
                 });
+                ew.write(
+                    SfxChannel::play_event("bipper1.ogg".into())
+                        .with_settings(PlaybackSettings::DESPAWN)
+                        .with_delay_mode(DelayMode::Immediate),
+                );
             }
         }
 
