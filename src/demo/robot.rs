@@ -232,11 +232,11 @@ fn on_voxel_instance_ready(
                 entity_commands.insert((Toggler {
                     unique_id,
                     puzzle_id,
-                },Blink {
-                    is_on: false,
-                    on_material: robot_assets.material.clone(),
-                    off_material: robot_assets.material_no_emission.clone(),
-                }));
+                },Blink::new(false,
+                    robot_assets.material.clone(),
+                robot_assets.material_no_emission.clone(),
+                        trigger.event().instance,
+                    &mut commands)));
             }
             _ => {}
         }

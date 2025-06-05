@@ -31,15 +31,16 @@ pub(super) fn plugin(app: &mut App) {
 
 pub fn toggle_play_pressed(
     trigger: Trigger<Pointer<Pressed>>,
-    mut query: Query<(Option<&Toggler>, &mut Blink)>,
+    mut query: Query<(Entity, Option<&Toggler>, &mut Blink)>,
     mut puzzle_events: EventWriter<PuzzleEvent>,
     mut index_tracker: ResMut<IndexTracker>,
     mut ew: EventWriter<SfxEvent>,
+    mut commands: Commands,
 ) {
-    if let Ok((toggler, mut blink)) = query.get_mut(trigger.target()) {
+    if let Ok((entity, toggler, mut blink)) = query.get_mut(trigger.target()) {
         if !blink.is_on
         {
-            blink.toggle();
+            blink.toggle(entity, &mut commands);
 
             if let Some(toggler) = toggler {
                 puzzle_events.write(PuzzleEvent {
