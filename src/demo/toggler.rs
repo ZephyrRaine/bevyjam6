@@ -1,7 +1,11 @@
 use bevy::prelude::*;
 use bevy_audio_controller::prelude::{AudioChannel, DelayMode};
 
-use crate::demo::{bipper::{SfxChannel, SfxEvent}, blink::Blink, puzzle::PuzzleEvent};
+use crate::demo::{
+    bipper::{SfxChannel, SfxEvent},
+    blink::Blink,
+    puzzle::{PuzzleEvent, PuzzleReset},
+};
 
 #[derive(Resource, Reflect)]
 #[reflect(Resource)]
@@ -11,9 +15,7 @@ pub struct IndexTracker {
 
 impl FromWorld for IndexTracker {
     fn from_world(_world: &mut World) -> Self {
-        Self {
-            current_id: 0,
-        }
+        Self { current_id: 0 }
     }
 }
 
@@ -27,6 +29,7 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<IndexTracker>();
     app.init_resource::<IndexTracker>();
     app.add_observer(toggle_play_pressed);
+    app.add_systems(Update, check_reset);
 }
 
 pub fn toggle_play_pressed(
@@ -38,9 +41,8 @@ pub fn toggle_play_pressed(
     mut commands: Commands,
 ) {
     if let Ok((entity, toggler, mut blink)) = query.get_mut(trigger.target()) {
-        if !blink.is_on
-        {
-            blink.toggle(entity, &mut commands);
+        if !blink.is_on {
+            blink.toggle(&mut commands.entity(entity));
 
             if let Some(toggler) = toggler {
                 puzzle_events.write(PuzzleEvent {
@@ -56,6 +58,18 @@ pub fn toggle_play_pressed(
                     .with_settings(PlaybackSettings::DESPAWN)
                     .with_delay_mode(DelayMode::Immediate),
             );
+        }
+    }
+}
+
+pub fn check_reset(
+    mut query: Query<(Entity, Option<&Toggler>, &mut Blink)>,
+    mut puzzle_reset: EventReader<PuzzleReset>,
+    mut commands: Commands,
+) {
+    for _ in puzzle_reset.read() {
+        for (entity, _, mut blink) in query.iter_mut() {
+            blink.toggle(&mut commands.entity(entity));
         }
     }
 }
