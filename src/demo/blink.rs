@@ -14,27 +14,24 @@ impl Blink {
         is_on: bool,
         on_material: Handle<StandardMaterial>,
         off_material: Handle<StandardMaterial>,
-        entity: Entity,
-        commands: &mut Commands,
+        commands: &mut EntityCommands,
     ) -> Self {
         let blink = Self {
             on_material,
             off_material,
             is_on,
         };
-        blink.apply_material(entity, commands);
+        blink.apply_material(commands);
         return blink;
     }
 
-    fn apply_material(&self, entity: Entity, commands: &mut Commands) {
-        commands
-            .entity(entity)
-            .insert(MeshMaterial3d(self.material().clone()));
+    fn apply_material(&self, commands: &mut EntityCommands) {
+        commands.insert(MeshMaterial3d(self.material().clone()));
     }
 
-    pub fn toggle(&mut self, entity: Entity, commands: &mut Commands) {
+    pub fn toggle(&mut self, commands: &mut EntityCommands) {
         self.is_on = !self.is_on;
-        self.apply_material(entity, commands);
+        self.apply_material(commands);
     }
 
     fn material(&self) -> &Handle<StandardMaterial> {
@@ -55,7 +52,7 @@ pub fn blink(
 ) {
     for (entity, mut blink, sync) in query.iter_mut() {
         if blink_tracks.timer_tracks[sync.track].finished() {
-            blink.toggle(entity, &mut commands);
+            blink.toggle(&mut commands.entity(entity));
         }
     }
 }

@@ -3,8 +3,8 @@ use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance};
 
 use crate::{
-    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper, demo::toggler::Toggler,
-    demo::synchronized::Synchronized, screens::Screen,
+    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
+    demo::synchronized::Synchronized, demo::toggler::Toggler, screens::Screen,
 };
 
 use super::draggable::Draggable;
@@ -96,7 +96,7 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
         },
     ));
 
-     commands.spawn((
+    commands.spawn((
         Name::new("PuzzleSolver 2"),
         PuzzleSolver {
             puzzle_id: 2,
@@ -229,14 +229,20 @@ fn on_voxel_instance_ready(
                     }
                 }
 
-                entity_commands.insert((Toggler {
-                    unique_id,
-                    puzzle_id,
-                },Blink::new(false,
+                let blink = Blink::new(
+                    false,
                     robot_assets.material.clone(),
-                robot_assets.material_no_emission.clone(),
-                        trigger.event().instance,
-                    &mut commands)));
+                    robot_assets.material_no_emission.clone(),
+                    &mut entity_commands,
+                );
+
+                entity_commands.insert((
+                    Toggler {
+                        unique_id,
+                        puzzle_id,
+                    },
+                    blink,
+                ));
             }
             _ => {}
         }
