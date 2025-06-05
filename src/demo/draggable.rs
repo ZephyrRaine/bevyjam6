@@ -110,8 +110,8 @@ fn on_drag(
             if transform.translation.y != target_position.y {
                 puzzle_events.write(PuzzleEvent {
                     puzzle_id: slider.puzzle_id,
-                    slider_id: slider.slider_id,
-                    slider_position: ((snap_value - draggable.base_position.y)
+                    element_id: slider.slider_id,
+                    element_value: ((snap_value - draggable.base_position.y)
                         / draggable.snap_interval) as i32,
                 });
                 ew.write(

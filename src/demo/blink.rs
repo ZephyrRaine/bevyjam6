@@ -10,7 +10,7 @@ pub struct Blink {
 }
 
 impl Blink {
-    fn toggle(&mut self) {
+    pub fn toggle(&mut self) {
         self.is_on = !self.is_on;
     }
 

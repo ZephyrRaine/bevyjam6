@@ -3,8 +3,8 @@ use bevy::prelude::*;
 #[derive(Event)]
 pub struct PuzzleEvent {
     pub puzzle_id: u32,
-    pub slider_id: usize,
-    pub slider_position: i32,
+    pub element_id: usize,
+    pub element_value: i32,
 }
 
 #[derive(Component, Reflect)]
@@ -30,7 +30,7 @@ fn update_puzzle_solver(
             if puzzle_solver.puzzle_id != ev.puzzle_id {
                 continue;
             }
-            puzzle_solver.current_positions[ev.slider_id] = ev.slider_position;
+            puzzle_solver.current_positions[ev.element_id] = ev.element_value;
 
             if puzzle_solver.current_positions == puzzle_solver.correct_positions {
                 println!("Puzzle {} solved!", ev.puzzle_id);

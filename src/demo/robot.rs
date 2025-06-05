@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance};
 
 use crate::{
-    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
+    asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper, demo::toggler::Toggler,
     demo::synchronized::Synchronized, screens::Screen,
 };
 
@@ -93,6 +93,15 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
             puzzle_id: 1,
             correct_positions: vec![-3, -1, -2, -1, -2, -2, -1, -3],
             current_positions: vec![0, 0, 0, 0, 0, 0, 0, 0],
+        },
+    ));
+
+     commands.spawn((
+        Name::new("PuzzleSolver 2"),
+        PuzzleSolver {
+            puzzle_id: 2,
+            correct_positions: vec![0, 1, 4, 3, 6, 7, 8, 5, 2],
+            current_positions: vec![0, 0, 0, 0, 0, 0, 0, 0, 0],
         },
     ));
 }
@@ -204,6 +213,30 @@ fn on_voxel_instance_ready(
                     ));
                     slider_counter.slider_id[puzzle_id] += 1;
                 }
+            }
+            "toggler" => {
+                let mut unique_id: i32 = 0;
+                let mut puzzle_id: u32 = 2;
+
+                if let Some(bump_str) = params.first() {
+                    if let Ok(id) = bump_str.parse::<i32>() {
+                        unique_id = id;
+                    }
+                }
+                if let Some(bump_str) = params.get(1) {
+                    if let Ok(id) = bump_str.parse::<u32>() {
+                        puzzle_id = id;
+                    }
+                }
+
+                entity_commands.insert((Toggler {
+                    unique_id,
+                    puzzle_id,
+                },Blink {
+                    is_on: false,
+                    on_material: robot_assets.material.clone(),
+                    off_material: robot_assets.material_no_emission.clone(),
+                }));
             }
             _ => {}
         }

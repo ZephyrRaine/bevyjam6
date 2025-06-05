@@ -18,6 +18,7 @@ pub mod puzzle;
 pub mod robot;
 pub mod slider;
 pub mod synchronized;
+pub mod toggler;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         audio::plugin,
@@ -29,6 +30,7 @@ pub(super) fn plugin(app: &mut App) {
         blink::plugin,
         bipper::plugin,
         bumper::plugin,
+        toggler::plugin,
         synchronized::plugin,
         draggable::plugin,
         puzzle::plugin,
