@@ -1,4 +1,5 @@
 //! Spawn the main level.
+use std::f32::consts::*;
 
 use bevy::{
     color::palettes::tailwind::*, pbr::CascadeShadowConfigBuilder,
@@ -20,46 +21,49 @@ pub fn spawn_level(mut commands: Commands) {
         StateScoped(Screen::Gameplay),
     ));
 
+    // commands.spawn((
+    //     DirectionalLight {
+    //         shadows_enabled: true,
+    //         illuminance: 150.0,
+    //         ..default()
+    //     },
+    //     Transform::IDENTITY.looking_to(Vec3::new(2.5, -1., 0.85), Vec3::Y),
+    //     CascadeShadowConfigBuilder {
+    //         first_cascade_far_bound: 70.0,
+    //         maximum_distance: 1500.0,
+    //         ..default()
+    //     }
+    //     .build(),
+    // ));
+
     commands.spawn((
-        DirectionalLight {
+        SpotLight {
+            intensity: 10000000.0, // lumens
+            color: Color::WHITE,
             shadows_enabled: true,
-            illuminance: 200.0,
+            range: 150.0,
+            radius: 260.0,
+            inner_angle: PI / 4.0 * 0.85,
+            outer_angle: PI / 4.0,
             ..default()
         },
-        Transform::IDENTITY.looking_to(Vec3::new(2.5, -1., 0.85), Vec3::Y),
         CascadeShadowConfigBuilder {
             first_cascade_far_bound: 70.0,
             maximum_distance: 1500.0,
             ..default()
         }
         .build(),
-    ));
-
-    commands.spawn((
-        SpotLight {
-            color: Color::LinearRgba(LinearRgba {
-                red: 1.0,
-                green: 1.0,
-                blue: 0.80,
-                alpha: 1.0,
-            }),
-            intensity: 200.0,
-            range: 100.0,
-            radius: 35.0,
-            shadows_enabled: true,
-            ..default()
-        },
-        Transform::from_xyz(0.0, 250.0, 0.0).looking_at(-Vec3::Z, Vec3::Y),
+        Transform::from_xyz(0.0, 100.0, 0.0).looking_at(-Vec3::Z, Vec3::Y),
     ));
 
     commands.insert_resource(AmbientLight {
         color: Color::LinearRgba(LinearRgba {
-            red: 1.0,
-            green: 1.0,
-            blue: 0.80,
+            red: 0.142,
+            green: 0.1004,
+            blue: 0.158,
             alpha: 1.0,
         }),
-        brightness: 400.00,
+        brightness: 250.00,
         ..default()
     });
 }
