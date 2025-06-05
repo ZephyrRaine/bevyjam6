@@ -1,8 +1,6 @@
 use bevy::pbr::NotShadowCaster;
 use bevy::prelude::*;
-use bevy_vox_scene::{
-    UnitOffset, VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance,
-};
+use bevy_vox_scene::{VoxLoaderSettings, VoxScenePlugin, VoxelInstanceReady, VoxelModelInstance};
 
 use crate::{
     asset_tracking::LoadResource, demo::bipper::Bipper, demo::blink::Blink, demo::bumper::Bumper,
