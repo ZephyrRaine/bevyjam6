@@ -7,7 +7,8 @@ pub struct PuzzleEvent {
     pub slider_position: i32,
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct PuzzleSolver {
     pub puzzle_id: u32,
     pub correct_positions: Vec<i32>,
@@ -17,6 +18,7 @@ pub struct PuzzleSolver {
 pub(super) fn plugin(app: &mut App) {
     app.add_event::<PuzzleEvent>();
     app.add_systems(Update, update_puzzle_solver);
+    app.register_type::<PuzzleSolver>();
 }
 
 fn update_puzzle_solver(
@@ -26,7 +28,7 @@ fn update_puzzle_solver(
     for ev in puzzle_events.read() {
         for mut puzzle_solver in query.iter_mut() {
             if puzzle_solver.puzzle_id != ev.puzzle_id {
-                break;
+                continue;
             }
             puzzle_solver.current_positions[ev.slider_id] = ev.slider_position;
 

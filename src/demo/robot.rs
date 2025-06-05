@@ -28,8 +28,7 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<RobotAssets>();
     app.load_resource::<RobotAssets>();
     app.insert_resource(SliderCounter {
-        slider_id: 0,
-        puzzle_id: 0,
+        slider_id: vec![0, 0],
     });
 }
 
@@ -48,8 +47,7 @@ pub struct RobotAssets {
 
 #[derive(Resource)]
 pub struct SliderCounter {
-    pub slider_id: usize,
-    pub puzzle_id: u32,
+    pub slider_id: Vec<usize>,
 }
 
 impl FromWorld for RobotAssets {
@@ -83,11 +81,20 @@ pub fn spawn_robot(mut commands: Commands, robot_assets: Res<RobotAssets>) {
         .observe(on_pros_voxel_instance_ready);
 
     commands.spawn((
-        Name::new("PuzzleSolver"),
+        Name::new("PuzzleSolver 0"),
         PuzzleSolver {
             puzzle_id: 0,
             correct_positions: vec![-4, -3, 0, -1],
             current_positions: vec![0, 0, 0, 0],
+        },
+    ));
+
+    commands.spawn((
+        Name::new("PuzzleSolver 1"),
+        PuzzleSolver {
+            puzzle_id: 1,
+            correct_positions: vec![-3, -1, -2, -1, -2, -2, -1, -3],
+            current_positions: vec![0, 0, 0, 0, 0, 0, 0, 0],
         },
     ));
 }
@@ -192,11 +199,12 @@ fn on_voxel_instance_ready(
                         .translation,
                 ));
                 if params.len() > 2 {
+                    let puzzle_id = params[2].parse::<usize>().unwrap();
                     entity_commands.insert(Slider::new(
-                        slider_counter.puzzle_id,
-                        slider_counter.slider_id,
+                        puzzle_id.try_into().unwrap(),
+                        slider_counter.slider_id[puzzle_id],
                     ));
-                    slider_counter.slider_id += 1;
+                    slider_counter.slider_id[puzzle_id] += 1;
                 }
             }
             _ => {}
