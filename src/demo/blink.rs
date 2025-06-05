@@ -10,8 +10,31 @@ pub struct Blink {
 }
 
 impl Blink {
-    pub fn toggle(&mut self) {
+    pub fn new(
+        is_on: bool,
+        on_material: Handle<StandardMaterial>,
+        off_material: Handle<StandardMaterial>,
+        entity: Entity,
+        commands: &mut Commands,
+    ) -> Self {
+        let blink = Self {
+            on_material,
+            off_material,
+            is_on,
+        };
+        blink.apply_material(entity, commands);
+        return blink;
+    }
+
+    fn apply_material(&self, entity: Entity, commands: &mut Commands) {
+        commands
+            .entity(entity)
+            .insert(MeshMaterial3d(self.material().clone()));
+    }
+
+    pub fn toggle(&mut self, entity: Entity, commands: &mut Commands) {
         self.is_on = !self.is_on;
+        self.apply_material(entity, commands);
     }
 
     fn material(&self) -> &Handle<StandardMaterial> {
@@ -32,10 +55,7 @@ pub fn blink(
 ) {
     for (entity, mut blink, sync) in query.iter_mut() {
         if blink_tracks.timer_tracks[sync.track].finished() {
-            blink.toggle();
-            commands
-                .entity(entity)
-                .insert(MeshMaterial3d(blink.material().clone()));
+            blink.toggle(entity, &mut commands);
         }
     }
 }
