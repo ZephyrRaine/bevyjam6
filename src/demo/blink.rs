@@ -3,7 +3,6 @@ use bevy::prelude::*;
 use crate::demo::synchronized::{SyncTracks, Synchronized};
 
 #[derive(Component)]
-#[require(Synchronized)]
 pub struct Blink {
     pub on_material: Handle<StandardMaterial>,
     pub off_material: Handle<StandardMaterial>,
